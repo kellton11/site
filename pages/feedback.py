@@ -17,7 +17,7 @@ st.markdown("""
             margin-bottom: 30px;
         }
         .stButton button {
-            background-color:#628af0 ;
+            background-color:#4764AD ;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -26,7 +26,8 @@ st.markdown("""
             transition: background-color 0.3s;
         }
         .stButton button:hover {
-            background-color: ;
+            background-color: #6189ED ;
+            color: black
         }
         .feedback-box {
             background-color: #eef7ff;
@@ -53,7 +54,7 @@ st.title("🌟 Feedbacks")
 st.write("")
 st.write("")
 
-name = st.text_input("Digite seu nome:")
+name = st.text_input("Digite seu nome (*Opicional*):")
 feedback = st.text_area("Deixe seu feedback:")
 st.success("Obrigado pelo seu feedback!")
 

@@ -7,9 +7,8 @@ import time
 import webbrowser
 from time import sleep
 from PIL import Image
-import pandas as pd 
-
-#cores
+import pandas as pd
+import os
 
 st.markdown("""
         <style>
@@ -20,64 +19,105 @@ st.markdown("""
                 font-weight: bold;
             }
 
-        .stButton>button {
-            width: 260px;
-            background-color: green;
-            color: white;     
-            padding: 15px 30px;
-            font-size: 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: left;
-            margin: 0 auto;
+        .st-key-discurso1 button:hover {
+            background-color: #F2C8AB;
+            color: black;
 
-        }
-
-        .stButton>button:hover {
-            background-color: darkred;  /* Cor do botão ao passar o mouse */
-        }
-        .bt1 >button {
-            background-color: #777666;  /* Cor do botão 1 */
-            color: white;  /* Cor do texto */
-            font-size: 18px;
-            border-radius: 10px;
-            padding: 10px 20px;
-            border: none;
-            transition: background-color 0.3s ease;
-        }
-        .bt1 > button:hover {
-            background-color: #777666;  /* Cor ao passar o mouse para o botão 1 */
+            border: solid black;
         }
             
-             .candidato > button {
-            background-color: #777555;  /* cor para o botao de resultado */
+        .st-key-discurso2 button:hover {
+            background-color: #F2C8AB;
+            color: black;
+            border: solid black;
+            
+        }
+            
+        .st-key-resultado button:hover {
+            background-color: #F2C8AB;
+            color: black;
+            border: none;
+            }
+
+        .st-key-candidato1 button:hover{
+            color: black;
+            background-color: #A19E73;
+            }
+            
+        .st-key-candidato2 button:hover{
+            color: black;
+            background-color: #A19E73;
+            }
+
+        .st-key-candidato1 button {
+            \width: 260px;
+            background-color: #777555;
             color: white;
             border-radius: 10px;
             padding: 10px 20px;
             border: none;
             font-size: 18px;
-        }
+            }
 
-        .button_candidato2 > button:hover {
-            background-color: #0000FF;  /* Cor ao passar o mouse para o botão do Candidato 2 */
-        }
+        .st-key-candidato2 button {
+            \width: 260px;
+            background-color: #777555;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            border: none;
+            font-size: 18px;
+            }
 
-        .col5
-            {
+        .st-key-discurso1 button {
+            \width: 260px;
+            background-color: #776254;
+            color: white;
+            border-radius: 20px;
+            padding: 10px 20px;
+            border: solid;
+            font-size: 18px;
+            }
+
+        .st-key-discurso2 button {
+            \width: 260px;
+            background-color: #776254;
+            color: white;
+            border-radius: 20px;
+            padding: 10px 20px;
+            border: solid;
+            font-size: 18px;
+            }
 
             justify-content: center;
             align: center;
-            
+        
+        .st-key-resultado button {
+            background-color: #C9A68E;
+            color: black;
             }
 
         </style>
+        </style>
+            
+        </style>    
             
     """, unsafe_allow_html=True)
 
-# Configuração inicial da págin
+caminho_arquivo = "dados.csv" 
 
+def inicializar_csv(caminho_arquivo):
+    if not os.path.exists(caminho_arquivo):
+        df = pd.DataFrame({
+            "Candidato": ["Candidato 1", "Candidato 2"],
+            "Votos": [0, 0]
+        })
+        df.to_csv(caminho_arquivo, index=False)
+
+def registrar_voto(candidato, caminho_arquivo):
+    df = pd.read_csv(caminho_arquivo)
+    df.loc[df['Candidatos'] == candidato, 'Votos'] += 1
+    df.to_csv(caminho_arquivo, index=False)
 
 # Títulos e descrição
 st.title("🗳️ Sistema de Votação")
@@ -104,10 +144,10 @@ if "ja_votou" not in st.session_state:
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("Discurso do candidato 1"):
+    if st.button("Discurso do candidato 1", key='discurso1'):
         webbrowser.open("https://drive.google.com/file/d/11IVI3_s0NYogvjrYesEWxzz2KC7oO9Wv/view")
 with col2:
-        if st.button("Discurso do candidato 2"):
+        if st.button("Discurso do candidato 2",key='discurso2'):
             webbrowser.open("https://drive.google.com/file/d/1AZausUdYaAfLX70AU1VNTdWBbg1MxvQd/view")
 
 if st.session_state.ja_votou:
@@ -117,17 +157,18 @@ else:
     col3, col4 = st.columns(2)
 
     with col3:
-        if st.button("Votar no Candidato 1"):  
-            
+        if st.button("Votar no Candidato 1", key='candidato1'):  
+            registrar_voto("Candidato 1", "dados.csv")
             st.session_state.votos_candidato1 += 1
             st.session_state.ja_votou = True
             st.success("Seu voto foi registrado para o Candidato 1!")
  
     with col4:
-        if st.button("Votar no Candidato 2"):
+        if st.button("Votar no Candidato 2", key='candidato2'):
+            registrar_voto("Candidato 2", "dados.csv")
             st.session_state.votos_candidato2 += 1
             st.session_state.ja_votou = True
-            st.success("Seu voto foi registrado para o Candidato 2!")
+            st.success("Seu voto foi registrado para o Candidato 2!")             
 
 votos_can_1 = []
 
@@ -137,7 +178,7 @@ with col5:
 with col6:
     st.image("https://media.tenor.com/UPiEUVO2Q04AAAAe/mulch-mulch-dog.png", width=160)
 
-if st.button("Resultado", key="resultado", help="Ver resultado das eleições", use_container_width=True):
+if st.button("Resultado",key='resultado', help="Ver resultado das eleições", use_container_width=True):
             sleep(0.5)
             st.success("Redirecionando...")
             st.switch_page("pages/resultado.py")
